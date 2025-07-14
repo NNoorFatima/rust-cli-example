@@ -1,5 +1,5 @@
 use std::process::Command;
-use clap::{Arg, Command}; // add at the top with your imports
+use clap::{Arg, Command as ClapCommand};
 use serde_json;
 
 fn run_command(command: &str) -> String {
@@ -33,8 +33,7 @@ fn run_lsblk(device: &str) -> serde_json::Value {
 }
 
 fn main() {
-    
-    let matches = Command::new("lsblk")
+    let matches = ClapCommand::new("lsblk")
         .version("0.0.1")
         .author("Alfredo Deza")
         .about("lsblk in Rust")
@@ -42,11 +41,11 @@ fn main() {
             Arg::new("device")
                 .help("Device to query")
                 .required(true)
-                .index(1)
+                .index(1),
         )
         .get_matches();
 
-    let device = matches.value_of("device").unwrap();
+    let device = matches.get_one::<String>("device").unwrap();
     let output = serde_json::to_string(&run_lsblk(&device)).unwrap();
     println!("{}", output);
 }
